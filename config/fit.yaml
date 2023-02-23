@@ -2,9 +2,8 @@ seed_everything: 42
 trainer:
   accelerator: 'auto'
   devices: 'auto'
-  precision: 'bf16'
   enable_progress_bar: true
-  max_epochs: 50
+  max_epochs: 10
   benchmark: true
   deterministic: false
   auto_lr_find: true
@@ -30,9 +29,9 @@ data:
   class_path: datamodule.CIFAR10DataModule
   init_args:
     data_dir: '~/datasets'
-    batch_size: 256
+    batch_size: 128
     val_split: 0.2
-    num_workers: 12
+    num_workers: 8
     shuffle: true
     pin_memory: true
     drop_last: false

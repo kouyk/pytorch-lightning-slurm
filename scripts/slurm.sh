@@ -6,6 +6,7 @@
 #SBATCH --cpus-per-task=64
 #SBATCH --partition=standard
 #SBATCH --output=demo-%j.out
+#SBATCH --signal=SIGUSR1@60
 
 ENV_NAME="resnet-slurm-demo"
 PROJ_DIR="$HOME/proj/pytorch-lightning-slurm"
@@ -14,12 +15,12 @@ WORK_DIR="${WORK_HOME}/$(basename "${PROJ_DIR}")"
 
 function create_work_dir() {
   if [ ! -d "${WORK_HOME}" ]; then
-  echo "${WORK_HOME} doesn't exist, creating..."
-  mkdir "${WORK_HOME}"
-  chmod 700 "${WORK_HOME}"
-else
-  echo "${WORK_HOME} already exists, skipping..."
-fi
+    echo "${WORK_HOME} doesn't exist, creating..."
+    mkdir "${WORK_HOME}"
+    chmod 700 "${WORK_HOME}"
+  else
+    echo "${WORK_HOME} already exists, skipping..."
+  fi
 }
 
 function mamba_install() {
@@ -61,6 +62,7 @@ conda activate "${ENV_NAME}"
 srun python main.py fit \
   --config config/fit.yaml \
   --data.init_args.num_workers "$(nproc)" \
+  --data.init_args.batch_size 512 \
   --data.init_args.data_dir "${WORK_HOME}"/datasets
 
 # copying results back
