@@ -1,0 +1,38 @@
+seed_everything: 42
+trainer:
+  accelerator: 'auto'
+  devices: 'auto'
+  precision: 'bf16'
+  enable_progress_bar: true
+  max_epochs: 50
+  benchmark: true
+  deterministic: false
+  auto_lr_find: true
+  callbacks:
+    - class_path: ModelCheckpoint
+      init_args:
+        filename: '{epoch}-{val_accuracy:.2f}'
+        monitor: 'val_accuracy'
+        mode: 'max'
+        save_last: false
+        save_top_k: 1
+        every_n_epochs: 1
+    - class_path: LearningRateMonitor
+      init_args:
+        logging_interval: 'step'
+        log_momentum: true
+model:
+  class_path: models.ResNet18
+  init_args:
+    lr: 1e-3
+    num_classes: 10
+data:
+  class_path: datamodule.CIFAR10DataModule
+  init_args:
+    data_dir: '~/datasets'
+    batch_size: 256
+    val_split: 0.2
+    num_workers: 12
+    shuffle: true
+    pin_memory: true
+    drop_last: false
