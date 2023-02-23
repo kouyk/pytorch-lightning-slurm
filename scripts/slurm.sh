@@ -48,7 +48,7 @@ echo Running on "$(hostname)"...
 create_work_dir
 
 # copy files over
-srun rsync -avP --delete "${PROJ_DIR}" "${WORK_DIR}"
+srun rsync -avP --delete "${PROJ_DIR}" "${WORK_HOME}"
 
 # conda setup
 mamba_install
